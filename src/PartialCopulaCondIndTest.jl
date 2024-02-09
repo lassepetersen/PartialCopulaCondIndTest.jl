@@ -1,5 +1,5 @@
 module PartialCopulaCondIndTest
 
-# Write your package code here.
+include("generalized_correlation.jl")
 
 end
