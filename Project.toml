@@ -1,4 +1,4 @@
-name = "PartialCopulaCondIndTest"
+name = "PartialCopulaCondIndTests"
 uuid = "a0b9dab6-b2dd-44ae-8d5b-9405e2fed938"
 authors = ["Lasse Petersen"]
 version = "1.0.0-DEV"

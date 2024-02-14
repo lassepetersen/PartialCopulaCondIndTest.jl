@@ -1,4 +1,4 @@
-using PartialCopulaCondIndTest
+using PartialCopulaCondIndTests
 using Test
 
 using QuadGK
@@ -9,7 +9,7 @@ using Distributions
     tau_sequence = range(0.01, stop=0.99, length=q + 1)
 
     for i in 1:q
-        σ = PartialCopulaCondIndTest.TrimmingFunc(tau_sequence[i], tau_sequence[i + 1])
+        σ = PartialCopulaCondIndTests.TrimmingFunc(tau_sequence[i], tau_sequence[i + 1])
         @test isapprox(quadgk(u -> σ(u), tau_sequence[i], tau_sequence[i + 1])[1], 1.0, atol=1e-5)
     end
 end
@@ -20,7 +20,7 @@ end
     tau_sequence = range(0.01, stop=0.99, length=q + 1)
 
     for i in 1:q
-        φ = PartialCopulaCondIndTest.PhiFunc(tau_sequence[i], tau_sequence[i + 1])
+        φ = PartialCopulaCondIndTests.PhiFunc(tau_sequence[i], tau_sequence[i + 1])
         @test isapprox(quadgk(u -> φ(u), tau_sequence[i], tau_sequence[i + 1])[1], 0.0, atol=1e-5)
         @test isapprox(quadgk(u -> φ(u)^2, tau_sequence[i], tau_sequence[i + 1])[1], 1.0, atol=1e-5)
     end
@@ -37,7 +37,7 @@ end
 
     tau_sequence = range(0.01, stop=0.99, length=q + 1)
     
-    ρ = PartialCopulaCondIndTest.TrimmedSpearmanCorrelation(q)
+    ρ = PartialCopulaCondIndTests.TrimmedSpearmanCorrelation(q)
     ρ_hat = ρ(U₁, U₂)
 
     @test size(ρ_hat) == (q, q)

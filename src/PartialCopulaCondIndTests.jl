@@ -1,4 +1,4 @@
-module PartialCopulaCondIndTest
+module PartialCopulaCondIndTests
 
 include("generalized_correlation.jl")
 
