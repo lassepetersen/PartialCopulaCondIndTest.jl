@@ -1,4 +1,5 @@
 using QuadGK
+using Distributions
 using Statistics: mean
 using LinearAlgebra: norm
 
@@ -166,12 +167,12 @@ struct TrimmedSpearmanCorrelationTest <: IndependenceTest
 end
 
 
-function nobs(TSCT::TrimmedSpearmanCorrelationTest)
+function StatsAPI.nobs(TSCT::TrimmedSpearmanCorrelationTest)
     return length(TSCT.U₁)
 end
 
 
-function pvalue(TSCT::TrimmedSpearmanCorrelationTest)
+function StatsAPI.pvalue(TSCT::TrimmedSpearmanCorrelationTest)
     # Sample size
     n = nobs(TSCT)
 
