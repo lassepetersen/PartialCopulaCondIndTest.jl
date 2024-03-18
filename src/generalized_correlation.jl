@@ -4,6 +4,8 @@ using Statistics: mean
 using LinearAlgebra: norm
 
 
+export TrimmedSpearmanCorrelationTest
+
 struct TrimmingFunc
     # Trimming parameters
     μ::Float64
@@ -151,7 +153,14 @@ function (ρ::TrimmedSpearmanCorrelation)(U₁::Vector{Float64}, U₂::Vector{Fl
     return [mean(ρ.phi_vector[i].(U₁) .* ρ.phi_vector[j].(U₂)) for i in 1:ρ.q, j in 1:ρ.q]
 end
 
+"""
+    TrimmedSpearmanCorrelationTest(q, U₁, U₂)
 
+Creates a `TrimmedSpearmanCorrelationTest` object to perform a test of independence
+between two sets of generalized residuals using the trimmed Spearman correlation.
+
+
+"""
 struct TrimmedSpearmanCorrelationTest <: IndependenceTest
     q::Int
     U₁::Vector{Float64}

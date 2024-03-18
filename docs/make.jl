@@ -1,4 +1,4 @@
 push!(LOAD_PATH, "../src/")
-using Documenter
+using Documenter, PartialCopulaCondIndTests
 
-makedocs(sitename="My Documentation")
+makedocs(sitename="Partial Copula Conditional Indenpence Tests")

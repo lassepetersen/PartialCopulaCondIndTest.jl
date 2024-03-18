@@ -1,0 +1,5 @@
+# PartialCopulaCondIndTests.jl
+
+```@docs
+TrimmedSpearmanCorrelationTest
+```
