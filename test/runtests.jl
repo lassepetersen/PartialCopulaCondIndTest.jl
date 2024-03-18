@@ -1,4 +1,4 @@
 using PartialCopulaCondIndTests
 using Test
 
-include("generalized_correlation.jl")
+include("test_generalized_correlation.jl")
