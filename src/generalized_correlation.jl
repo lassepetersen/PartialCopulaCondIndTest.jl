@@ -167,6 +167,9 @@ struct TrimmedSpearmanCorrelationTest <: IndependenceTest
 end
 
 
+testname(::TrimmedSpearmanCorrelationTest) = "Trimmed Spearman correlation independence test"
+
+
 function StatsAPI.nobs(TSCT::TrimmedSpearmanCorrelationTest)
     return length(TSCT.U₁)
 end
