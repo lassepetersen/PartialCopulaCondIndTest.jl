@@ -1,5 +1,7 @@
 using QuadGK
-using Statistics
+using Distributions
+using Statistics: mean
+using LinearAlgebra: norm
 
 
 struct TrimmingFunc
@@ -147,4 +149,46 @@ end
 
 function (ρ::TrimmedSpearmanCorrelation)(U₁::Vector{Float64}, U₂::Vector{Float64})
     return [mean(ρ.phi_vector[i].(U₁) .* ρ.phi_vector[j].(U₂)) for i in 1:ρ.q, j in 1:ρ.q]
+end
+
+
+struct TrimmedSpearmanCorrelationTest <: IndependenceTest
+    q::Int
+    U₁::Vector{Float64}
+    U₂::Vector{Float64}
+
+    function TrimmedSpearmanCorrelationTest(q, U₁, U₂)
+        if length(U₁) == length(U₂)
+            new(q, U₁, U₂)
+        else
+            throw(ArgumentError("Generalized residuals, U₁ and U₂, must have the same length"))    
+        end
+    end
+end
+
+
+testname(::TrimmedSpearmanCorrelationTest) = "Trimmed Spearman correlation independence test"
+
+
+function StatsAPI.nobs(TSCT::TrimmedSpearmanCorrelationTest)
+    return length(TSCT.U₁)
+end
+
+
+function StatsAPI.pvalue(TSCT::TrimmedSpearmanCorrelationTest)
+    # Sample size
+    n = nobs(TSCT)
+
+    # Compute the trimmed Spearman correlation
+    ρ = TrimmedSpearmanCorrelation(TSCT.q)
+    ρ_hat = ρ(TSCT.U₁, TSCT.U₂)
+
+    # Computing the test statistic
+    T = norm(ρ_hat, 2)^2
+
+    # Computing the p-value
+    target_dist = Chisq(TSCT.q^2)
+    p_value = ccdf(target_dist, n * T)
+
+    return p_value
 end

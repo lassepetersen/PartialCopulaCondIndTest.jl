@@ -1,5 +1,3 @@
-using StatsAPI: HypothesisTest
-
 abstract type ConditionalIndependenceTest <: HypothesisTest end
 abstract type IndependenceTest <: HypothesisTest end
 abstract type PartialCopulaEstimator end
