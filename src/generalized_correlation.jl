@@ -4,6 +4,18 @@ using Statistics: mean
 using LinearAlgebra: norm
 
 
+export TrimmedSpearmanCorrelationTest
+
+"""
+    TrimmingFunc(μ, λ, δ, f)
+    TrimmingFunc(μ, λ, δ)
+    TrimmingFunc(μ, λ)
+
+Trimming function used for generalized correlation calculations. See Equation (13) in [1].
+
+# References
+[1] $paper
+"""
 struct TrimmingFunc
     # Trimming parameters
     μ::Float64
@@ -17,6 +29,11 @@ struct TrimmingFunc
 end
 
 
+"""
+    valid_trimming_params(μ, λ, δ)
+
+Check if the trimming parameters μ, λ, and δ are valid, i.e., 0 <= μ < λ <= 1 and 0 <= δ <= (λ - μ) / 2.
+"""
 function valid_trimming_params(μ, λ, δ)
     if !(0 <= μ <= 1)
         throw(ArgumentError("μ must be in [0, 1]"))
@@ -63,11 +80,21 @@ end
 TrimmingFunc(μ, λ) = TrimmingFunc(μ, λ, 0.1 * (λ - μ) / 2)
 
 
+"""
+    (σ::TrimmingFunc)(u::Float64)
+
+Apply the trimming function `σ` to the input `u`.
+"""
 function (σ::TrimmingFunc)(u::Float64)
     return σ.f(u)
 end
 
 
+"""
+    PhiFunc(μ, λ)
+
+Phi function used in the generalized correlation test.
+"""
 struct PhiFunc
     # Centering and scaling parameters
     m::Float64
@@ -76,6 +103,7 @@ struct PhiFunc
     # Trimming function
     σ::TrimmingFunc
 end
+
 
 function PhiFunc(μ, λ)
     σ = TrimmingFunc(μ, λ)
@@ -98,11 +126,21 @@ function PhiFunc(μ, λ)
 end
 
 
+"""
+    (φ::PhiFunc)(u::Float64)
+
+Compute the value of the PhiFunc object at the given input `u`.
+"""
 function (φ::PhiFunc)(u::Float64)
     return φ.c * (u - φ.m) * φ.σ(u)
 end
 
 
+"""
+    valid_tau_params(τ_min, τ_max)
+
+Check if the given values for τ_min and τ_max are valid parameters for generalized correlation.
+"""
 function valid_tau_params(τ_min, τ_max)
     if !(0 < τ_min < 1)
         throw(ArgumentError("τ_min must be in (0, 1)"))
@@ -118,6 +156,11 @@ function valid_tau_params(τ_min, τ_max)
 end
 
 
+"""
+    TrimmedSpearmanCorrelation(q, τ_min=0.01, τ_max=0.99)
+
+Constructor of the Trimmed Spearman Correlation.
+"""
 struct TrimmedSpearmanCorrelation
     # Dimension 
     q::Int
@@ -147,11 +190,22 @@ function TrimmedSpearmanCorrelation(q, τ_min=0.01, τ_max=0.99)
 end
 
 
+"""
+    (ρ::TrimmedSpearmanCorrelation)(U₁::Vector{Float64}, U₂::Vector{Float64})
+
+Compute the generalized correlation matrix between two vectors `U₁` and `U₂` using the Trimmed Spearman correlation.
+"""
 function (ρ::TrimmedSpearmanCorrelation)(U₁::Vector{Float64}, U₂::Vector{Float64})
     return [mean(ρ.phi_vector[i].(U₁) .* ρ.phi_vector[j].(U₂)) for i in 1:ρ.q, j in 1:ρ.q]
 end
 
 
+"""
+    TrimmedSpearmanCorrelationTest(q, U₁, U₂)
+
+Creates a `TrimmedSpearmanCorrelationTest` object to perform a test of independence
+between two sets of generalized residuals using the trimmed Spearman correlation.
+"""
 struct TrimmedSpearmanCorrelationTest <: IndependenceTest
     q::Int
     U₁::Vector{Float64}
@@ -170,11 +224,27 @@ end
 testname(::TrimmedSpearmanCorrelationTest) = "Trimmed Spearman correlation independence test"
 
 
+"""
+    nobs(TSCT::TrimmedSpearmanCorrelationTest)
+
+Get the number of observations used in the Trimmed Spearman Correlation Test.
+"""
 function StatsAPI.nobs(TSCT::TrimmedSpearmanCorrelationTest)
     return length(TSCT.U₁)
 end
 
 
+"""
+    pvalue(TSCT::TrimmedSpearmanCorrelationTest)
+
+Compute the p-value for the Trimmed Spearman Correlation Test.
+
+# Arguments
+- `TSCT::TrimmedSpearmanCorrelationTest`: The Trimmed Spearman Correlation Test object.
+
+# Returns
+- `p_value`: The p-value for the test.
+"""
 function StatsAPI.pvalue(TSCT::TrimmedSpearmanCorrelationTest)
     # Sample size
     n = nobs(TSCT)
