@@ -6,13 +6,15 @@ using LinearAlgebra: norm
 
 export TrimmedSpearmanCorrelationTest
 
-
 """
     TrimmingFunc(μ, λ, δ, f)
     TrimmingFunc(μ, λ, δ)
     TrimmingFunc(μ, λ)
 
-Trimming function used for generalized correlation calculations.
+Trimming function used for generalized correlation calculations. See Equation (13) in [1].
+
+# References
+[1] $paper
 """
 struct TrimmingFunc
     # Trimming parameters
